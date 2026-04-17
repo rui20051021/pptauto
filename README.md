@@ -1,0 +1,3 @@
+# pptauto
+
+Initial repository bootstrap.
