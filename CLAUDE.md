@@ -13,10 +13,9 @@ PPT Master is an AI-driven presentation generation system. Through multi-role co
 ```bash
 # Source content conversion
 python3 skills/ppt-master/scripts/source_to_md/pdf_to_md.py <PDF_file>
-python3 skills/ppt-master/scripts/source_to_md/doc_to_md.py <DOCX_or_other_file>   # Native: .docx/.html/.epub/.ipynb; pandoc fallback: .doc/.odt/.rtf/.tex/.rst/.org/.typ
-python3 skills/ppt-master/scripts/source_to_md/ppt_to_md.py <PPTX_file>
-python3 skills/ppt-master/scripts/source_to_md/web_to_md.py <URL>    # auto-uses curl_cffi if installed (covers WeChat etc.)
-node skills/ppt-master/scripts/source_to_md/web_to_md.cjs <URL>       # fallback only; use if curl_cffi is unavailable
+python3 skills/ppt-master/scripts/source_to_md/doc_to_md.py <DOCX_or_other_file>   # Requires: pandoc (DOCX/EPUB/HTML/LaTeX/RST/etc.)
+python3 skills/ppt-master/scripts/source_to_md/web_to_md.py <URL>
+node skills/ppt-master/scripts/source_to_md/web_to_md.cjs <URL>
 
 # Project management
 python3 skills/ppt-master/scripts/project_manager.py init <project_name> --format ppt169
@@ -36,8 +35,9 @@ python3 skills/ppt-master/scripts/total_md_split.py <project_path>
 python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
 # ✅ Confirm no errors before running the next command
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
-# Output: exports/<project_name>_<timestamp>.pptx + exports/<project_name>_<timestamp>_svg.pptx
-# Use --only native or --only legacy to generate just one version
+# Default: generates two files — native shapes (.pptx) + SVG reference (_svg.pptx)
+# Use --only native  to skip SVG reference version
+# Use --only legacy  to only generate SVG image version
 ```
 
 ## Architecture
@@ -51,11 +51,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 
 ## SVG Technical Constraints (Non-negotiable)
 
-**Banned features**: `mask` | `<style>` | `class` | external CSS | `<foreignObject>` | `textPath` | `@font-face` | `<animate*>` | `<script>` | `<iframe>` | `<symbol>`+`<use>` (`id` inside `<defs>` is a legitimate reference and is NOT banned)
-
-**Conditionally allowed**: `marker-start` / `marker-end` — the referenced `<marker>` must live in `<defs>`, use `orient="auto"`, and its shape must be a triangle (3-vertex closed path/polygon), diamond (4-vertex), or circle/ellipse. The converter maps these to native DrawingML `<a:headEnd>` / `<a:tailEnd>`. See `shared-standards.md` §1.1 for full constraints.
-
-**Conditionally allowed**: `clipPath` on `<image>` — the referenced `<clipPath>` must live in `<defs>` and contain a single shape child (circle, ellipse, rect with rx/ry, path, or polygon). The converter maps these to native DrawingML picture geometry (`<a:prstGeom>` or `<a:custGeom>`). Only supported on `<image>` elements. See `shared-standards.md` §1.2 for full constraints.
+**Banned features**: `clipPath` | `mask` | `<style>` | `class` | external CSS | `<foreignObject>` | `textPath` | `@font-face` | `<animate*>` | `<script>` | `marker-end` | `<iframe>` | `<symbol>+<use>` (`id` inside `<defs>` is a legitimate reference and is NOT banned)
 
 **PPT compatibility alternatives**:
 
@@ -64,6 +60,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 | `rgba()` | `fill-opacity` / `stroke-opacity` |
 | `<g opacity>` | Set opacity on each child element individually |
 | `<image opacity>` | Overlay with a mask layer |
+| `marker-end` arrows | `<polygon>` triangles |
 
 ## Canvas Format Quick Reference
 

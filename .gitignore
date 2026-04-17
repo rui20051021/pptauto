@@ -170,15 +170,5 @@ PERSONAL_NOTES.md
 projects/*
 !projects/README.md
 
-# App build outputs
-apps/web/dist/
-apps/api/.pytest_cache/
-apps/api/**/__pycache__/
-apps/web/.vite/
-
-# Local SaaS runtime data
-var/storage/
-var/uploads/
-var/workspaces/
-var/*.db
-release/
+# Task state cache (persisted generation task status)
+.tasks/
