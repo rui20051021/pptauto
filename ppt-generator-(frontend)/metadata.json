@@ -1,0 +1,6 @@
+{
+  "name": "PPT Generator (Frontend)",
+  "description": "A web frontend for a PPT generation SaaS containing template upload, text content input, and preview generation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

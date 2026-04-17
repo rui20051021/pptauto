@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Georgia:ital@0;1&family=Helvetica+Neue:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #0C0C0C;
+  --color-ink: #E5E5E5;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif: "Georgia", serif;
+  --font-display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide scrollbar for clean look */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
